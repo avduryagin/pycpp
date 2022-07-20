@@ -1,0 +1,4 @@
+﻿  pb.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(1363,5): warning MSB8012: TargetPath(C:\Users\avduryagin\source\repos\pylab\x64\Debug\.pyd) does not match the Linker's OutputFile property value (C:\Users\avduryagin\source\repos\pylab\x64\Debug\pylab.pyd). This may cause your project to build incorrectly. To correct this, please make sure that $(OutDir), $(TargetName) and $(TargetExt) property values match the value specified in %(Link.OutputFile).
+     Creating library C:\Users\avduryagin\source\repos\pylab\x64\Debug\pylab.lib and object C:\Users\avduryagin\source\repos\pylab\x64\Debug\pylab.exp
+  pylab.vcxproj -> C:\Users\avduryagin\source\repos\pylab\x64\Debug\.pyd
