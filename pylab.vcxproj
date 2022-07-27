@@ -21,6 +21,10 @@
   <ItemGroup>
     <ClCompile Include="pb.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="pyproject.toml" />
+    <None Include="setup.py" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -82,7 +86,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <TargetExt>.pyd</TargetExt>
-    <TargetName>$(assending)</TargetName>
+    <TargetName>examples</TargetName>
+    <OutDir>D:\Python\pyservcond\DLLs\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
