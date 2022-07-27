@@ -1,3 +1,4 @@
 ﻿  pb.cpp
-C:\Users\avduryagin\source\repos\pylab\pb.cpp(101): warning C4172: returning address of local variable or temporary
-  pylab.vcxproj -> D:\Python\pyservcond\DLLs\examples.pyd
+C:\Users\avduryagin\Source\Repos\pycpp\pb.cpp(101): warning C4172: возвращение адреса локальной или временной переменной
+     Создается библиотека C:\Users\avduryagin\appdata\Local\Programs\Python\Python310\DLLs\examples.lib и объект C:\Users\avduryagin\appdata\Local\Programs\Python\Python310\DLLs\examples.exp
+  pylab.vcxproj -> C:\Users\avduryagin\appdata\Local\Programs\Python\Python310\DLLs\examples.pyd
