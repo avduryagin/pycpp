@@ -105,7 +105,7 @@ public:
 
 
 };
-void print_array(py::array_t<double, py::array::c_style | py::array::forcecast> &array_)
+void print_array(py::array_t<double, py::array::c_style | py::array::forcecast> array_)
 {
 	expanded_array<double, py::array::c_style | py::array::forcecast> array= expanded_array<double, py::array::c_style | py::array::forcecast>(array_);
 
@@ -167,7 +167,7 @@ void cfill(T* x, int n, T val)
 		x[i] = val;
 	}
 }
-double assignment(py::array_t<double, py::array::c_style | py::array::forcecast>& array_){
+double assignment(py::array_t<double, py::array::c_style | py::array::forcecast> array_){
 
 	expanded_array<double, py::array::c_style | py::array::forcecast> a = expanded_array<double, py::array::c_style | py::array::forcecast>(array_);
 	int k = (int)a.shape(0);
