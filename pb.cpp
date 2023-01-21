@@ -7,16 +7,15 @@
 #include <iostream>
 #include <stdarg.h>
 #include <cmath>
+#include "pb.h"
 
 namespace py = pybind11;
 const double pi = M_PI;
 const double pidev = pi / 180.;
 const double earth_radius = 6372795;
+const double earth_diameter = 6371*2000;
 
-double distance(double& latitude0, double& longtitude0, double& latitude1, double& longtitude1);
-double degree_to_radian(double& degree);
-double dcos(double& degree);
-double dsin(double& degree);
+
 
 double dcos(double& degree)
 {
@@ -51,6 +50,22 @@ double distance(double& latitude0, double& longtitude0, double& latitude1, doubl
 	double y = _CMATH_::sqrt(_CMATH_::pow(clat1*sdelta,2)+ _CMATH_::pow(clat0*slat1-slat0*clat1*cdelta, 2));
 	double dist = _CMATH_::atan2(y, x)*earth_radius;
 	return dist;
+
+}
+
+double haversine(double& latitude0, double& longtitude0, double& latitude1, double& longtitude1)
+{
+	double dlong = (longtitude1 - longtitude0)/2.;
+	double dlat = (latitude1 - latitude0)/2;
+	double clat0 = dcos(latitude0);
+	double clat1 = dcos(latitude1);
+	double sdlong = dsin(dlong);
+	double sdlat = dsin(dlat);	
+	double ans = sdlat * sdlat + clat0 * clat1 * sdlong * sdlong;
+	ans = _CMATH_::asin(_CMATH_::sqrt(ans));
+	return ans * earth_diameter;
+
+
 
 }
 
@@ -317,6 +332,7 @@ PYBIND11_MODULE(cppmath,m)
 	//m.def("print_array", &print_array);
 	m.def("assignment", &assignment);
 	m.def("distance", &distance);
+	m.def("haversine", &haversine);
 	
 	/*
 	py::class_<Pet>(m, "Pet")
