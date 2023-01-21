@@ -1,14 +1,60 @@
+#define _USE_MATH_DEFINES
 #include "pybind11\pybind11.h"
-#include "constructor_stats.h"
+//#include "constructor_stats.h"
 #include "pybind11\numpy.h"
-#include "pybind11_tests.h"
+//#include "pybind11_tests.h"
 #include "Python.h"
 #include <iostream>
 #include <stdarg.h>
+#include <cmath>
 
 namespace py = pybind11;
+const double pi = M_PI;
+const double pidev = pi / 180.;
+const double earth_radius = 6372795;
 
+double distance(double& latitude0, double& longtitude0, double& latitude1, double& longtitude1);
+double degree_to_radian(double& degree);
+double dcos(double& degree);
+double dsin(double& degree);
 
+double dcos(double& degree)
+{
+	double angle = degree_to_radian(degree);
+	return _CMATH_::cos(angle);
+}
+
+double dsin(double& degree)
+{
+	double angle = degree_to_radian(degree);	
+	return _CMATH_::sin(angle);
+}
+
+double degree_to_radian(double& degree)
+{
+	return degree * pidev;
+}
+
+//return distance between points X,Y defined as degrees latitude, longtitude
+double distance(double& latitude0, double& longtitude0, double& latitude1, double& longtitude1)
+{
+
+	double delta = longtitude1 - longtitude0;
+	double clat0 = dcos(latitude0);
+	double clat1 = dcos(latitude1);
+	double slat0 = dsin(latitude0);
+	double slat1 = dsin(latitude1);
+	double cdelta = dcos(delta);
+	double sdelta = dsin(delta);
+
+	double x = slat0 * slat1 + clat0 * clat1 * cdelta;
+	double y = _CMATH_::sqrt(_CMATH_::pow(clat1*sdelta,2)+ _CMATH_::pow(clat0*slat1-slat0*clat1*cdelta, 2));
+	double dist = _CMATH_::atan2(y, x)*earth_radius;
+	return dist;
+
+}
+
+/*
 int add(int i=0, int j=0)
 {
 	return(i + j);
@@ -76,7 +122,10 @@ public:
 	}
 
 };*/
+
 template <typename T, int ExtraFlags>
+
+
 class expanded_array
 {
 private:
@@ -105,6 +154,7 @@ public:
 
 
 };
+/*
 void print_array(py::array_t<double, py::array::c_style | py::array::forcecast> &array_)
 {
 	expanded_array<double, py::array::c_style | py::array::forcecast> array= expanded_array<double, py::array::c_style | py::array::forcecast>(array_);
@@ -129,7 +179,9 @@ void print_array(py::array_t<double, py::array::c_style | py::array::forcecast> 
 	}
 
 }
+*/
 
+/*
 template <typename T>
 class top_level
 {
@@ -147,6 +199,7 @@ public:
 
 
 };
+
 template <typename T>
 class sub_level:top_level<T>
 {public:
@@ -158,6 +211,7 @@ class sub_level:top_level<T>
 	}
 
 };
+*/
 
 template <typename T>
 void cfill(T* x, int n, T val)
@@ -167,6 +221,8 @@ void cfill(T* x, int n, T val)
 		x[i] = val;
 	}
 }
+
+
 double assignment(py::array_t<double, py::array::c_style | py::array::forcecast>& array_){
 
 	expanded_array<double, py::array::c_style | py::array::forcecast> a = expanded_array<double, py::array::c_style | py::array::forcecast>(array_);
@@ -199,8 +255,7 @@ double assignment(py::array_t<double, py::array::c_style | py::array::forcecast>
 			{
 				if (!used[j])
 				{
-					double cur = a.at(i0,j) - u[i0] - v[j];
-					//double cur = a[i0][j] - u[i0] - v[j];
+					double cur = a.at(i0,j) - u[i0] - v[j];					
 					if (cur < minv[j])
 					{
 						minv[j] = cur;
@@ -241,39 +296,29 @@ double assignment(py::array_t<double, py::array::c_style | py::array::forcecast>
 	}
 	for (int i = 0; i < n; i++)
 	{
-		c[p[i] - 1] = i - 1;
-		//std::cout << c[i] << "  ";
+		c[p[i] - 1] = i - 1;		
 
 	}
 
-
-	/*for (int i = 0; i < (k - 1); i++)
-	{
-		//c[p[i] - 1] = i - 1;
-		std::cout <<i<<"->"<< c[i] <<'\n';
-
-	}*/
-	//std::cout << "sum=" << v[0];
-	double sum = v[0];
-
-	//*sum = v[0];
-	delete[] u;
-	//delete p;
+	double sum = v[0];	
+	delete[] u;	
 	delete[] used;
 	return sum;
-	//if (expand) { delete[] a; }
-	//return c;
+
 }
 
-PYBIND11_MODULE(examples,m)
+
+
+PYBIND11_MODULE(cppmath,m)
 {
-	m.doc()="my firs example";
-	m.def("sum", &add, "returns sum of two integers",py::arg("i")=0, py::arg("j")=0);
-	m.def("print_dict", &print_dict);
-	m.def("print_array", &print_array);
+	//m.doc()="my firs example";
+	//m.def("sum", &add, "returns sum of two integers",py::arg("i")=0, py::arg("j")=0);
+	//m.def("print_dict", &print_dict);
+	//m.def("print_array", &print_array);
 	m.def("assignment", &assignment);
+	m.def("distance", &distance);
 	
-	
+	/*
 	py::class_<Pet>(m, "Pet")
 		.def("__repr__", [](const Pet& a) {return "struct Pet; name=" + a.name + "; age= " + std::to_string(a.age); })
 		.def_readonly("age",&Pet::age)
@@ -296,7 +341,7 @@ PYBIND11_MODULE(examples,m)
 		.def("__repr__", [](sub_level<int>& t) { return "class level=" + std::to_string(t.get_level()); })
 		.def("level", &sub_level<int>::get_level);
 
-
+*/
 
 
 }
