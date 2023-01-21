@@ -13,7 +13,7 @@ namespace py = pybind11;
 const double pi = M_PI;
 const double pidev = pi / 180.;
 const double earth_radius = 6372795;
-const double earth_diameter = 6371*2000;
+const double earth_diameter = earth_radius *2;
 
 
 
