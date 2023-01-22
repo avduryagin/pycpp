@@ -237,8 +237,117 @@ void cfill(T* x, int n, T val)
 	}
 }
 
+double assignment(py::array_t<double, py::array::c_style | py::array::forcecast>& array_, py::array_t<int, py::array::c_style | py::array::forcecast>& numbers) {
 
-double assignment(py::array_t<double, py::array::c_style | py::array::forcecast>& array_){
+	expanded_array<double, py::array::c_style | py::array::forcecast> a = expanded_array<double, py::array::c_style | py::array::forcecast>(array_);
+
+	ssize_t k = a.shape(0);
+	ssize_t n = a.shape(1);
+	ssize_t ncells = numbers.shape(0);
+	double inf = std::numeric_limits<double>::infinity();
+	if (ncells != (k - 1)) { return inf; }
+	//double* u = new double[2*n+k];
+	//double* v = u + k;
+	//double* minv = v + n;
+	//int* p = new int[2 * n + k];
+	//int* way = p + n;
+	//int* c = way + n;
+	//bool* used=new bool[n];
+
+	double* u = (double*)calloc(n + k + n, sizeof(double));
+	double* v = u + k;
+	double* minv = v + n;
+	int* p = (int*)calloc(n + n + k, sizeof(int));
+	int* way = p + n;
+	int* c = way + n;
+	bool* used = (bool*)calloc(n, sizeof(bool));
+
+
+	for (int i = 1; i < k; i++)
+	{
+		p[0] = i;
+		int j0 = 0;
+
+		cfill<double>(minv, n, inf);
+		cfill<bool>(used, n, false);
+		do
+		{
+			used[j0] = true;
+			int i0 = p[j0];
+			double delta = inf;
+			int j1 = 0;
+			for (int j = 1; j < n; j++)
+			{
+				if (!used[j])
+				{
+					double cur = a.at(i0, j) - u[i0] - v[j];
+					//double cur = a[i0][j] - u[i0] - v[j];
+					if (cur < minv[j])
+					{
+						minv[j] = cur;
+						way[j] = j0;
+					}
+					if (minv[j] < delta)
+					{
+						delta = minv[j];
+						j1 = j;
+					}
+				}
+
+			}
+			for (int j = 0; j < n; j++)
+			{
+				if (used[j])
+				{
+					u[p[j]] = u[p[j]] + delta;
+					v[j] = v[j] - delta;
+				}
+				else
+				{
+					minv[j] = minv[j] - delta;
+				}
+			}
+			j0 = j1;
+
+		} while (p[j0] != 0);
+		do
+		{
+			int j1 = way[j0];
+			p[j0] = p[j1];
+			j0 = j1;
+
+		} while (j0 > 0);
+
+
+	}
+	for (int i = 0; i < n; i++)
+	{
+		c[p[i] - 1] = i - 1;
+		//numbers.mutable_at(p[i] - 1) = i - 1;
+		//std::cout << c[i] << "  ";
+
+	}
+
+	for (int i = 0; i < k - 1; i++)
+	{
+		numbers.mutable_at(i) = c[i];
+		//std::cout << "mut_at "<<numbers.mutable_at(i) << "  ";
+		//std::cout << "at " << numbers.at(i) << "  ";
+		//std::cout << c[i] << "  ";
+	}
+
+	double sum = v[0];
+
+	//*sum = v[0];
+	delete[] u;
+	//delete p;
+	delete[] used;
+	return sum;
+	//if (expand) { delete[] a; }
+	//return c;
+}
+
+double assignment_(py::array_t<double, py::array::c_style | py::array::forcecast>& array_){
 
 	expanded_array<double, py::array::c_style | py::array::forcecast> a = expanded_array<double, py::array::c_style | py::array::forcecast>(array_);
 	int k = (int)a.shape(0);
