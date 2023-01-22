@@ -229,7 +229,7 @@ class sub_level:top_level<T>
 */
 
 template <typename T>
-void cfill(T* x, int n, T val)
+void cfill(T* x, ssize_t n, T val)
 {
 	for(int i=0;i<n;i++)
 	{
